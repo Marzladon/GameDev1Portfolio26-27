@@ -4,6 +4,8 @@
 
 ### OOP Intergalactic Junkyard
 
-![]()
+![IntergalacticJunkyardGamePlay]()
+
+![IntergalacticJunkyardGameOver]()
 
 []()
