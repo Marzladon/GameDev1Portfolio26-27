@@ -6,6 +6,6 @@
 
 ![IntergalacticJunkyardGamePlay]()
 
-![IntergalacticJunkyardGameOver]()
+![IntergalacticJunkyardGameOver](https://github.com/Marzladon/GameDev1Portfolio26-27/blob/main/images/ijgameover.png?raw=true)
 
 []()
