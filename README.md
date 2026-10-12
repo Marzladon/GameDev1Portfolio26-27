@@ -4,7 +4,7 @@
 
 ### OOP Intergalactic Junkyard
 
-![IntergalacticJunkyardGamePlay]()
+![IntergalacticJunkyardGamePlay](https://github.com/Marzladon/GameDev1Portfolio26-27/blob/main/images/ijgameplay.png?raw=true)
 
 ![IntergalacticJunkyardGameOver](https://github.com/Marzladon/GameDev1Portfolio26-27/blob/main/images/ijgameover.png?raw=true)
 
