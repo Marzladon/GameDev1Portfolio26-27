@@ -10,7 +10,7 @@ class Startscrap {
     this.x = x;
     this.y = y;
     health = 50;
-    startscrap = loadImage("Start?.png");
+    startscrap = loadImage("Start.png");
     size = 100;
   }
 
