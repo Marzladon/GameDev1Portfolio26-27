@@ -10,6 +10,7 @@ ArrayList<Laser> lasers = new ArrayList<Laser>();
 int score, lives, pwrupcooldown;
 PImage background;
 PImage gameover;
+PImage cursor;
 boolean gamestarted;
 SoundFile laserfire;
 SoundFile shiphit;
@@ -27,6 +28,7 @@ void setup() {
   size(700, 900);
   background = loadImage("Background.png");
   gameover = loadImage("Gameover.png");
+  cursor = loadImage("Cursor.png");
   pwrupcooldown = 0;
   ship01 = new Scrapship(width/2, height/4, this);
   starts.add(new Startscrap(width/2, height/2));
@@ -176,6 +178,7 @@ void draw() {
   ship01.display();
   ship01.move(mouseX, 850);
   infoPanel();
+  image(cursor,mouseX,mouseY);
   //gameover sequence
   if (lives==0) {
     image(gameover, width/2, height/2);
