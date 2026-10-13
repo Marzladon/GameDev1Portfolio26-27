@@ -14,7 +14,7 @@ class Laser {
     w = 10;
     h = 20;
     speed = 15;
-    damage = 50;
+    damage = 0;
   }
   //Member Methods
   void display() {
