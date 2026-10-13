@@ -1,17 +1,20 @@
 // Marz Meyer | Sep 16 26 | Interglactic_Junkyard
 import gifAnimation.*;
 import processing.sound.*;
-
 ArrayList<Debris> debrisfield = new ArrayList<Debris>();
 ArrayList<Startscrap> starts = new ArrayList<Startscrap>();
 ArrayList<PowerUp> powerups = new ArrayList<PowerUp>();
 ArrayList<Laser> lasers = new ArrayList<Laser>();
 //ArrayList<Star> starfield = new ArrayList<Star>();
-int score, lives, pwrupcooldown;
+int balance, lives, pwrupcooldown, debrisfreq, laserdamage;
 PImage background;
 PImage gameover;
 PImage cursor;
+PImage dashboard;
+PImage shop;
 boolean gamestarted;
+boolean initialstart;
+boolean shopup;
 SoundFile laserfire;
 SoundFile shiphit;
 SoundFile debrishit;
@@ -29,12 +32,19 @@ void setup() {
   background = loadImage("Background.png");
   gameover = loadImage("Gameover.png");
   cursor = loadImage("Cursor.png");
+  dashboard = loadImage("dashboard.png");
+  shop = loadImage("Shop.png");
   pwrupcooldown = 0;
+  debrisfreq = 1800;
+  laserdamage = 50;
+  textSize(25);
   ship01 = new Scrapship(width/2, height/4, this);
   starts.add(new Startscrap(width/2, height/2));
   //debrisfield.add(new Debris(int(random(width)), -100));
   //powerups.add(new PowerUp(int(random(width)), -100));
   gamestarted = false;
+  initialstart = false;
+  shopup =false;
   //sounds
   laserfire = new SoundFile(this, "laserfire.mp3");
   shiphit = new SoundFile(this, "shiphit.mp3");
@@ -43,20 +53,22 @@ void setup() {
   powerup = new SoundFile(this, "powerup.mp3");
 
   //timers
-  debDist = new Timer(1800);
+  debDist = new Timer(debrisfreq);
   //startime = new Timer(500);
   pwrDist = new Timer(8000);
   debDist.start();
   //startime.start();
-  score = 0;
+  balance = 0;
   lives = 3;
   ship01.health = 200;
 }
 void draw() {
   noCursor();
   background(background);
+
+  //ship logic
   if (ship01.health<1) {
-    score = 0;
+    balance = 0;
     ship01.health = 100;
   }
   if (pwrupcooldown == 4) {
@@ -81,7 +93,7 @@ void draw() {
   }
   //startscrap forloop
   for (int i = 0; i < starts.size(); i++) {
-    println("Startscrap: " + starts.size());
+    //println("Startscrap: " + starts.size());
     Startscrap s = starts.get(i);
     s.display();
     if (s.health<1) {
@@ -100,12 +112,13 @@ void draw() {
     if (ship01.isHit(d)) {
       debrisfield.remove(d);
       shiphit.play();
+      debrisfreq = debrisfreq - 50;
       ship01.health = ship01.health -25;
     }
     if (d.health<1) {
       debrisfield.remove(d);
       debrishit.play();
-      score = score+d.value;
+      balance = balance+d.value;
       pwrupcooldown ++;
     }
     if (d.isOffScreen() == true) {
@@ -138,14 +151,19 @@ void draw() {
   }
   //laserforloop
   for (int i = 0; i < lasers.size(); i++) {
-    println("Lasers: " + lasers.size());
+
+    //println("Lasers: " + lasers.size());
     Laser l = lasers.get(i);
+    l.damage = laserdamage;
     for (int j = 0; j < debrisfield.size(); j++) {
       Debris d = debrisfield.get(j);
-      if (d.isHit(l)) {
-        lasers.remove(l);
-        d.laserhit();
-        //score = score+d.value;
+      if (gamestarted == true) {
+        if (d.isHit(l)) {
+          lasers.remove(l);
+          d.laserhit(l);
+          shiphit.play();
+          //score = score+d.value;
+        }
       }
     }
     for (int k = 0; k < starts.size(); k++) {
@@ -154,6 +172,7 @@ void draw() {
         lasers.remove(l);
         s.laserhit();
         gamestarted = true;
+        initialstart = true;
       }
     }
     l.display();
@@ -176,18 +195,55 @@ void draw() {
   //}
 
   ship01.display();
-  ship01.move(mouseX, 850);
+  ship01.move(mouseX, 700);
   infoPanel();
-  image(cursor,mouseX,mouseY);
+  if (shopup == true) {
+    shoppanel();
+  }
+  image(cursor, mouseX, mouseY);
   //gameover sequence
   if (lives==0) {
     image(gameover, width/2, height/2);
-    text("FINAL SCORE: $" + score, width/2, height/6);
+    text("FINAL BALANCE: $" + balance, width/2, height/6);
     gamestarted = false;
+    shopup = false;
   }
 }
 
 void mousePressed() {
+  println("Mousex" + mouseX);
+  println("Mousey" + mouseY);
+  if (mouseX >= 558 && mouseX <= 644 &&
+    mouseY >= 785 && mouseY <= 855) {
+    shopup = !shopup;
+    if (initialstart == true) {
+      gamestarted = !gamestarted;
+    }
+  }
+
+  if (balance>= 250) {
+    if (mouseX >= 526 && mouseX <=600  &&
+      mouseY >= 587 && mouseY <=600 ) {
+      ship01.health = ship01.health + 50;
+      balance = balance - 250;
+    }
+  }
+
+  if (balance>= 500) {
+    if (mouseX >= 526 && mouseX <=600  &&
+      mouseY >= 610 && mouseY <=630 ) {
+      balance = balance - 500;
+      laserdamage = laserdamage + 25;
+    }
+  }
+  if (balance>= 300) {
+    if (mouseX >= 526 && mouseX <=600  &&
+      mouseY >= 650 && mouseY <=670 ) {
+      balance = balance - 300;
+      powerups.add(new PowerUp(int(random(width)), -100));
+    }
+  }
+
   if (ship01.lasercount == 2) {
     lasers.add(new Laser(ship01.x, ship01.y, this));
     laserfire.play();
@@ -198,12 +254,22 @@ void mousePressed() {
   }
 }
 void infoPanel() {
-  rectMode(CORNER);
-  fill(127, 127);
-  rect(0, 0, width, 50);
-  fill(256, 256, 256);
-  textSize(32);
-  text("Money:$ " + score, 75, 25);
-  text("Lives Left:" + lives, width-100, 25);
-  text("Health:" + ship01.health, 275, 25);
+  //rectMode(CORNER);
+  //fill(127, 127);
+  //rect(0, 0, width, 50);
+  //fill(256, 256, 256);
+  image(dashboard, width/2, 825);
+  fill(0, 256, 50);
+  textSize(25);
+  text(balance, 137, 850);
+  text(lives, 78, 790);
+  text(ship01.health, 285, 850);
+}
+
+void shoppanel() {
+  image(shop, 600, 650);
+  textSize(20);
+  text("+50  HP            250", 597, 592);
+  text("+25DMG          500", 597, 625);
+  text("PWRUP           300", 597, 656);
 }
