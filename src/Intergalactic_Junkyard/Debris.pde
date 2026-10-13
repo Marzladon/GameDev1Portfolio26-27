@@ -43,7 +43,7 @@ class Debris {
       return false;
     }
   }
-  void laserhit() {
-    health = health - 50;
+  void laserhit(Laser l) {
+    health = health - l.damage;
   }
 }
