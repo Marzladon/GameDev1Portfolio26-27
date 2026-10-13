@@ -26,6 +26,11 @@ class PowerUp {
     imageMode(CENTER);
     image(powerup, x, y, 48, 48);
     textAlign(CENTER, CENTER);
+    if (type == 'H') {
+      fill(0, 256, 0);
+    } else {
+      fill(256, 0, 0);
+    }
     text(type, x, y - 30);
   }
 
