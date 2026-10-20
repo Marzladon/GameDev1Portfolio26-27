@@ -6,6 +6,10 @@ class Timer {
     this.totalTime = totalTime;
   }
 
+  void setTime(int newTotalTime) {
+    this.totalTime = newTotalTime;
+  }
+
   void start() {
     savedTime = millis();
   }
