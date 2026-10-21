@@ -64,7 +64,7 @@ void setup() {
 
   //timers
   oneSec = new Timer(1000);
-  difficulty = new Timer(15000);
+  difficulty = new Timer(30000);
   debDist = new Timer(debrisfreq);
   //startime = new Timer(500);
   pwrDist = new Timer(8000);
@@ -77,7 +77,8 @@ void setup() {
 void draw() {
   if (score > hiscore) {
     hiscore = score;
-  }
+    scoreboard = loadImage("NewHighScore.png");
+  }else{scoreboard = loadImage("Scoreboard.png");}
   noCursor();
   background(background);
 
@@ -227,6 +228,9 @@ void draw() {
     text("PRESS R TO RESTART", width/2, 800);
     gamestarted = false;
     shopup = false;
+     highScore = new JSONObject();
+      highScore.setInt("highScore", hiscore);
+      saveJSONObject(highScore, "data/hscore.json");
   }
   image(cursor, mouseX, mouseY);
   if (oneSec.isFinished() == false) {
@@ -241,9 +245,7 @@ void draw() {
 void keyPressed() {
   if (lives == 0) {
     if (key == 'r') {
-      highScore = new JSONObject();
-      highScore.setInt("highScore", hiscore);
-      saveJSONObject(highScore, "data/hscore.json");
+     
       debrisfield.clear();
       powerups.clear();
       lives = lives + 3;
@@ -320,9 +322,10 @@ void infoPanel() {
   text(balance, 137, 850);
   text(lives, 78, 790);
   text(ship01.health, 285, 850);
-  textSize(17);
-  text(score, 130, 18);
-  text(hiscore, 100, 46);
+  textSize(23);
+  text(score, 195, 30);
+    textSize(20);
+  text(hiscore, 125, 78);
 }
 
 void shoppanel() {
